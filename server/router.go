@@ -26,5 +26,9 @@ func StartRouter(db *sql.DB) {
 		return service.CreateAccount(c, db)
 	})
 
+	api.POST("/login", func(c echo.Context) error {
+		return service.Login(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }
