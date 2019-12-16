@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 // StartRouter is use to start server
@@ -14,6 +15,14 @@ func StartRouter(db *sql.DB) {
 		PORT string = "5555" //config.Ctx.GetString("port")
 		e           = echo.New()
 	)
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 
 	// routes
 	api := e.Group("/api")
