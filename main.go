@@ -1,7 +1,11 @@
 package main
 
-import "gym-backend/server"
+import (
+	"gym-backend/db"
+	"gym-backend/server"
+)
 
 func main() {
-	server.StartRouter()
+	db := db.Connect()
+	server.StartRouter(db)
 }
