@@ -19,6 +19,7 @@ func StartRouter(db *sql.DB) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// config to pass cors policy
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
