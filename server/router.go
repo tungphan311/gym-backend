@@ -16,7 +16,7 @@ func StartRouter(db *sql.DB) {
 		e           = echo.New()
 	)
 
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	// config to pass cors policy
