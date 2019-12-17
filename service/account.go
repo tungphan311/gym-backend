@@ -3,11 +3,10 @@ package service
 import (
 	"net/http"
 
-	dbGorm "gym-backend/dbGorm"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
+	. "gym-backend/db"
 )
 
 // AccountRequest is used to read create new account
@@ -37,7 +36,7 @@ func CreateAccount(c echo.Context, db *gorm.DB) error {
 		return err
 	}
 
-	newAccount := dbGorm.Account{StaffID: account.StaffID, Username: account.Username, Password: account.Password}
+	newAccount := Account{StaffID: account.StaffID, Username: account.Username, Password: account.Password}
 	db.Create(&newAccount)
 
 	return c.JSON(http.StatusCreated, "OK")
@@ -51,8 +50,8 @@ func Login(c echo.Context, db *gorm.DB) error {
 		return err
 	}
 
-	query := dbGorm.Account{Username: account.Username, Password: account.Password}
-	var user dbGorm.Account
+	query := Account{Username: account.Username, Password: account.Password}
+	var user Account
 
 	db.Where(&query).Find(&user)
 

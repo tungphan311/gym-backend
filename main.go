@@ -1,13 +1,13 @@
 package main
 
 import (
-	"gym-backend/dbGorm"
+	"gym-backend/db"
 	"gym-backend/server"
 )
 
 func main() {
 	// db := db.onnect()
-	db := dbGorm.Connect()
+	db := db.Connect()
 	// a := dbGorm.Member{}
 	// fmt.Print(a)
 	server.StartRouter(db)
