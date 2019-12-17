@@ -1,9 +1,10 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 	"time"
+
+	dbGorm "gym-backend/db"
 
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
@@ -15,12 +16,21 @@ type StaffRequest struct {
 	BirthDate   string `json:"birthdate"`
 	Address     string `json:"address"`
 	Phone       string `json:"phone"`
-	RoleID      int    `json: roleid`
+	RoleID      uint   `json: roleid`
 	Gender      int    `json:"gender"`
 	Email       string `json:"email"`
 	BeginDay    string `json:"beginday"`
-	StaffTypeID int    `json:"stafftypeid"`
+	StaffTypeID uint   `json:"stafftypeid"`
 }
+
+type ErrorResponse struct {
+	StatusCode uint
+	Message    string
+}
+
+const (
+	errMessage = "Email is already taken"
+)
 
 // CreateStaff is used to create new account
 func CreateStaff(c echo.Context, db *gorm.DB) error {
@@ -30,14 +40,29 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 		return err
 	}
 
-	// format := "02/01/06"
-	dob, _ := time.Parse(time.RFC3339, staff.BirthDate)
+	var queryStaff dbGorm.Staff
+	db.Where(&dbGorm.Staff{Email: staff.Email}).Find(&queryStaff)
 
-	fmt.Println("staff: %v", dob)
+	if queryStaff.ID != 0 {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    errMessage,
+		})
+	}
 
-	// newStaff := dbGorm.Staff{FullName: staff.FullName, BirthDate: staff.BirthDate, Address: staff.Address, Phone: staff.Phone,
-	// 	RoleID: staff.RoleID, Gender: staff.Gender, Email: staff.Email, BeginDay: staff.BirthDate, StaffTypeID: staff.StaffTypeID}
-	// db.Create(&newStaff)
+	format := "02/01/2006"
+	dob, _ := time.Parse(format, staff.BirthDate)
+	begin, _ := time.Parse(format, staff.BeginDay)
+
+	newStaff := dbGorm.Staff{FullName: staff.FullName, BirthDate: dob, Address: staff.Address, Phone: staff.Phone,
+		RoleID: staff.RoleID, Gender: staff.Gender, Email: staff.Email, BeginDay: begin, StaffTypeID: staff.StaffTypeID}
+
+	var createdStaff dbGorm.Staff
+	db.Create(&newStaff).Last(&createdStaff)
+
+	staffID := int(createdStaff.ID)
+	newAccount := dbGorm.Account{StaffID: staffID, Username: staff.Email, Password: "password"}
+	db.Create(&newAccount)
 
 	return c.JSON(http.StatusCreated, "OK")
 }
