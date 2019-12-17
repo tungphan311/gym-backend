@@ -14,6 +14,8 @@ type Staff struct {
 	Phone       string
 	RoleID      int
 	Gender      int
+	Email       string
+	BeginDay    time.Time
 	StaffTypeID int
 	Account     Account
 }

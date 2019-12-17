@@ -40,5 +40,9 @@ func StartRouter(db *gorm.DB) {
 		return service.Login(c, db)
 	})
 
+	api.POST("/staffs", func(c echo.Context) error {
+		return service.CreateStaff(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }
