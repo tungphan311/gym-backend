@@ -18,7 +18,12 @@ const (
 func init() {
 	db := Connect()
 
-	db.AutoMigrate(&Staff{}, &StaffType{}, &Role{}, &Account{})
+	db.AutoMigrate(
+		&Staff{}, &StaffType{}, &Role{}, &Account{},
+		&Permission{}, &Role{}, &RolePermission{},
+		&Class{}, &ClassMember{}, &ClassType{},
+		&Device{}, &DeviceStatus{}, &DeviceType{},
+		&Bill{}, &BillType{}, &Parameter{})
 
 	initData(db)
 }
