@@ -1,16 +1,16 @@
 package server
 
 import (
-	"database/sql"
 	"gym-backend/service"
 	"net/http"
 
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
 // StartRouter is use to start server
-func StartRouter(db *sql.DB) {
+func StartRouter(db *gorm.DB) {
 	var (
 		PORT string = "5555" //config.Ctx.GetString("port")
 		e           = echo.New()
@@ -38,6 +38,10 @@ func StartRouter(db *sql.DB) {
 
 	api.POST("/login", func(c echo.Context) error {
 		return service.Login(c, db)
+	})
+
+	api.POST("/staffs", func(c echo.Context) error {
+		return service.CreateStaff(c, db)
 	})
 
 	e.Logger.Fatal(e.Start(":" + PORT))

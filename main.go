@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	// db := db.Connect()
+	// db := db.onnect()
 	db := dbGorm.Connect()
 	// a := dbGorm.Member{}
 	// fmt.Print(a)

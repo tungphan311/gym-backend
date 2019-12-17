@@ -1,18 +1,19 @@
 package service
 
 import (
-	"database/sql"
 	"net/http"
 
-	// "github.com/dgrijalva/jwt-go"
+	dbGorm "gym-backend/dbGorm"
+
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
 
-// Account is used to read create new account
-type Account struct {
+// AccountRequest is used to read create new account
+type AccountRequest struct {
 	ID       int    `json:"id"`
-	StaffID  int    `json:"staffId"`
+	StaffID  int    `json:"staffid"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -24,67 +25,46 @@ type LoginAccount struct {
 }
 
 // Accounts is used to read list records of account
-type Accounts struct {
-	Account []Account `json:"accounts"`
-}
+// type Accounts struct {
+// 	Account []Account `json:"accounts"`
+// }
 
 // CreateAccount is used to create new account
-func CreateAccount(c echo.Context, db *sql.DB) error {
-	account := new(Account)
+func CreateAccount(c echo.Context, db *gorm.DB) error {
+	account := new(AccountRequest)
 
 	if err := c.Bind(account); err != nil {
 		return err
 	}
 
-	sqlStatement := `
-	INSERT INTO account (staffid, username, password)
-	VALUES ($1, $2, $3)
-	RETURNING id`
-
-	id := 0
-	err := db.QueryRow(sqlStatement, account.StaffID, account.Username, account.Password).Scan(&id)
-
-	if err != nil {
-		panic(err)
-	}
+	newAccount := dbGorm.Account{StaffID: account.StaffID, Username: account.Username, Password: account.Password}
+	db.Create(&newAccount)
 
 	return c.JSON(http.StatusCreated, "OK")
 }
 
 // Login is used to authenticate user
-func Login(c echo.Context, db *sql.DB) error {
+func Login(c echo.Context, db *gorm.DB) error {
 	account := new(LoginAccount)
 
 	if err := c.Bind(account); err != nil {
 		return err
 	}
 
-	sqlStatement := `
-	SELECT staffid FROM account 
-	WHERE username=$1 
-	AND password=$2`
+	query := dbGorm.Account{Username: account.Username, Password: account.Password}
+	var user dbGorm.Account
 
-	staffid := 0
-	rows, err := db.Query(sqlStatement, account.Username, account.Password)
-
-	if err != nil {
-		return echo.ErrUnauthorized
-	}
-
-	for rows.Next() {
-		if err := rows.Scan(&staffid); err != nil {
-			return echo.ErrUnauthorized
-		}
-	}
+	db.Where(&query).Find(&user)
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
 
-	// set claims
+	// // set claims
 	claims := token.Claims.(jwt.MapClaims)
-	claims["staffid"] = err
+	claims["username"] = user.Username
+	claims["staffid"] = user.StaffID
 
-	// Generate encoded token and send it as response.
+	// // Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte("secret"))
 	if err != nil {
 		return err
@@ -95,4 +75,6 @@ func Login(c echo.Context, db *sql.DB) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,
 	})
+
+	// return c.JSON(http.StatusOK, user)
 }

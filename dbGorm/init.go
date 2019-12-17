@@ -11,12 +11,40 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "12345"
+	password = "password"
 	dbname   = "gymdb"
 )
 
-func init() {
+var (
+	types = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
+	roles = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
+)
 
+func init() {
+	db := Connect()
+
+	db.AutoMigrate(&Staff{}, &StaffType{}, &Role{}, &Account{})
+
+	var staffTypes StaffType
+	count := 0
+	db.Find(&staffTypes).Count(&count)
+
+	if count == 0 {
+		for i := 0; i < len(types); i++ {
+			staffType := types[i]
+			db.Create(&staffType)
+		}
+	}
+
+	var role Role
+	db.Find(&role).Count(&count)
+
+	if count == 0 {
+		for i := 0; i < len(roles); i++ {
+			newRole := roles[i]
+			db.Create(&newRole)
+		}
+	}
 }
 
 func Connect() *gorm.DB {
