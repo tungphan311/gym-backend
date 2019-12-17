@@ -6,7 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	. "gym-backend/db"
+	db "gym-backend/db"
 )
 
 // AccountRequest is used to read create new account
@@ -29,31 +29,31 @@ type LoginAccount struct {
 // }
 
 // CreateAccount is used to create new account
-func CreateAccount(c echo.Context, db *gorm.DB) error {
+func CreateAccount(c echo.Context, dbGorm *gorm.DB) error {
 	account := new(AccountRequest)
 
 	if err := c.Bind(account); err != nil {
 		return err
 	}
 
-	newAccount := Account{StaffID: account.StaffID, Username: account.Username, Password: account.Password}
-	db.Create(&newAccount)
+	newAccount := db.Account{StaffID: account.StaffID, Username: account.Username, Password: account.Password}
+	dbGorm.Create(&newAccount)
 
 	return c.JSON(http.StatusCreated, "OK")
 }
 
 // Login is used to authenticate user
-func Login(c echo.Context, db *gorm.DB) error {
+func Login(c echo.Context, dbGorm *gorm.DB) error {
 	account := new(LoginAccount)
 
 	if err := c.Bind(account); err != nil {
 		return err
 	}
 
-	query := Account{Username: account.Username, Password: account.Password}
-	var user Account
+	query := db.Account{Username: account.Username, Password: account.Password}
+	var user db.Account
 
-	db.Where(&query).Find(&user)
+	dbGorm.Where(&query).Find(&user)
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
