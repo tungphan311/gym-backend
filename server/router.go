@@ -1,6 +1,7 @@
 package server
 
 import (
+	"gym-backend/service"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -31,13 +32,13 @@ func StartRouter(db *gorm.DB) {
 		return c.String(http.StatusOK, "OOAD\ngym backend")
 	})
 
-	// api.POST("/accounts", func(c echo.Context) error {
-	// 	return service.CreateAccount(c, db)
-	// })
+	api.POST("/accounts", func(c echo.Context) error {
+		return service.CreateAccount(c, db)
+	})
 
-	// api.POST("/login", func(c echo.Context) error {
-	// 	return service.Login(c, db)
-	// })
+	api.POST("/login", func(c echo.Context) error {
+		return service.Login(c, db)
+	})
 
 	e.Logger.Fatal(e.Start(":" + PORT))
 }

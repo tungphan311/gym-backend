@@ -8,21 +8,31 @@ import (
 
 type Staff struct {
 	gorm.Model
-	FullName  string
-	BirthDate time.Time
-	Address   string
-	Phone     string
-	Role      Role
-	Gender    int
-	Type      StaffType
+	FullName    string
+	BirthDate   time.Time
+	Address     string
+	Phone       string
+	RoleID      int
+	Gender      int
+	StaffTypeID int
+	Account     Account
 }
 
 type Role struct {
 	gorm.Model
-	Name string
+	Name   string
+	Staffs []Staff
 }
 
 type StaffType struct {
 	gorm.Model
-	Name string
+	Name   string
+	Staffs []Staff
+}
+
+type Account struct {
+	gorm.Model
+	StaffID  int
+	Username string
+	Password string
 }
