@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"net/smtp"
 	"time"
@@ -97,9 +96,5 @@ func SendRegisterMail(db *gorm.DB) {
 		Password: "password",
 	})
 
-	err := smtp.SendMail("smtp.gmail.com:587", gmailAuth, GMAIL_USERNAME, []string{"quangnd@1ci.vn"}, body.Bytes())
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	smtp.SendMail("smtp.gmail.com:587", gmailAuth, GMAIL_USERNAME, []string{"quangnd@1ci.vn"}, body.Bytes())
 }
