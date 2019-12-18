@@ -51,14 +51,14 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 		return err
 	}
 
-	query := db.Account{Username: account.Username, Password: account.Password}
+	// query := db.Account{Username: account.Username, Password: account.Password}
 	var (
 		user  db.Account
 		staff db.Staff
 	)
 
-	dbGorm.Where(&query).Find(&user)
-	dbGorm.First(&db.Staff{}, user.StaffID).Find(&staff)
+	dbGorm.Where("username = ?", account.Username).First(&user)
+	dbGorm.Where("id = ?", user.StaffID).First(&staff)
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
