@@ -33,7 +33,7 @@ type ErrorResponse struct {
 }
 
 const (
-	errMessage = "Email is already taken"
+	errMessage = "Email đã được đăng ký"
 )
 
 // CreateStaff is used to create new account
@@ -70,7 +70,7 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 
 	// util.SendRegisterMail(db, staff.Email, "password")
 
-	return c.JSON(http.StatusCreated, "OK")
+	return c.JSON(http.StatusCreated, "Thêm nhân viên mới thành công")
 }
 
 // func GetStaff(c echo.Context, db *gorm.DB) error {
