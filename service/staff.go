@@ -1,14 +1,11 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
 	dbGorm "gym-backend/db"
-	util "gym-backend/utils"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
@@ -71,28 +68,72 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	newAccount := dbGorm.Account{StaffID: staffID, Username: staff.Email, Password: "password"}
 	db.Create(&newAccount)
 
-	util.SendRegisterMail(db, staff.Email, "password")
+	// util.SendRegisterMail(db, staff.Email, "password")
 
 	return c.JSON(http.StatusCreated, "OK")
 }
 
-func GetStaff(c echo.Context, db *gorm.DB) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	roleid := claims["roleid"].(uint)
+// func GetStaff(c echo.Context, db *gorm.DB) error {
+// 	// user := c.Get("user").(*jwt.Token)
+// 	// // claims := user.Claims.(jwt.MapClaims)
+// 	// // roleid := claims["roleid"].(uint)
 
-	fmt.Println("%d", roleid)
+// 	// fmt.Println("%d", roleid)
 
-	staffID := new(StaffID)
+// 	staffID := new(StaffID)
 
-	if err := c.Bind(staffID); err != nil {
+// 	if err := c.Bind(staffID); err != nil {
+// 		return err
+// 	}
+
+// 	var queryStaff dbGorm.Staff
+// 	db.Where(&dbGorm.Staff{}, staffID).Find(&queryStaff)
+
+// 	fmt.Println("%v", queryStaff)
+
+// 	return c.JSON(http.StatusOK, queryStaff)
+// }
+
+func GetStaffWithId(c echo.Context, db *gorm.DB) error {
+	id := c.Param("id")
+	staff := dbGorm.Staff{}
+	db.Where("id = ?", id).First(&staff)
+	if staff.ID == 0 {
+		return c.JSON(http.StatusBadRequest, "Không tìm thấy nhân viên.")
+	}
+
+	return c.JSON(http.StatusOK, staff)
+}	
+
+func GetAllStaff(c echo.Context, db *gorm.DB) error {
+	staffs := []dbGorm.Staff{}
+	db.Find(&staffs)
+	return c.JSON(http.StatusOK, staffs)
+}
+
+func UpdateStaff(c echo.Context, db *gorm.DB) error {
+	staff := new(StaffRequest)
+
+	if err := c.Bind(staff); err != nil {
 		return err
 	}
 
 	var queryStaff dbGorm.Staff
-	db.Where(&dbGorm.Staff{}, staffID).Find(&queryStaff)
+	db.Where(&dbGorm.Staff{Email: staff.Email}).First(&queryStaff)
 
-	fmt.Println("%v", queryStaff)
+	format := "02/01/2006"
+	dob, _ := time.Parse(format, staff.BirthDate)
+	begin, _ := time.Parse(format, staff.BeginDay)
+
+	queryStaff.FullName = staff.FullName
+	queryStaff.BirthDate = dob
+	queryStaff.Address = staff.Address
+	queryStaff.Phone = staff.Phone
+	queryStaff.Gender = staff.Gender
+	queryStaff.BeginDay = begin
+	queryStaff.RoleID = staff.RoleID
+	queryStaff.StaffTypeID = staff.RoleID
+	db.Save(&queryStaff)
 
 	return c.JSON(http.StatusOK, "Ok")
 }

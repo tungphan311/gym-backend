@@ -40,16 +40,29 @@ func StartRouter(db *gorm.DB) {
 		return service.Login(c, db)
 	})
 
+	// Staffs
 	api.POST("/staffs", func(c echo.Context) error {
 		return service.CreateStaff(c, db)
 	})
 
-	r := e.Group("/restricted")
-	r.Use(middleware.JWT([]byte("secret")))
-
-	r.GET("/staffs/:id", func(c echo.Context) error {
-		return service.GetStaff(c, db)
+	api.PUT("/staffs", func(c echo.Context) error {
+		return service.UpdateStaff(c, db)
 	})
+
+	api.GET("/staffs", func(c echo.Context) error {
+		return service.GetAllStaff(c, db)
+	})
+
+	api.GET("/staffs/:id", func(c echo.Context) error {
+		return service.GetStaffWithId(c, db)
+	})
+
+	// r := e.Group("/restricted")
+	// r.Use(middleware.JWT([]byte("secret")))
+
+	// r.GET("/staffs/:id", func(c echo.Context) error {
+	// 	return service.GetStaff(c, db)
+	// })
 
 	e.Logger.Fatal(e.Start(":" + PORT))
 }

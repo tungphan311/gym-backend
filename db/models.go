@@ -23,7 +23,6 @@ type Member struct {
 	StaffID        uint
 	Staff          Staff
 	MemberStatusID uint
-	Status         MemberStatus
 	Classes        []Class `gorm:"many2many:class_members;"`
 }
 
@@ -46,9 +45,7 @@ type Staff struct {
 	IsNew     bool
 
 	RoleID      uint
-	Role        Role
 	StaffTypeID uint
-	StaffType   StaffType
 }
 
 type StaffType struct {
@@ -64,7 +61,6 @@ type Account struct {
 	Password string
 
 	StaffID int
-	Staff   Staff
 }
 
 type Permission struct {
@@ -85,8 +81,6 @@ type Role struct {
 type RolePermission struct {
 	gorm.Model
 
-	allow bool
-
 	RoleID       uint
 	PermissionID uint
 }
@@ -99,9 +93,7 @@ type Class struct {
 	ScheduleString string
 
 	ClassTypeID uint
-	Type        ClassType
 	StaffID     uint
-	Staff       Staff
 	Members     []Member `gorm:"many2many:class_members;"`
 }
 
@@ -122,9 +114,7 @@ type Device struct {
 	InputDate time.Time
 
 	DeviceStatusID uint
-	DeviceStatus   DeviceStatus
 	DeviceTypeID   uint
-	DeviceType     DeviceType
 }
 
 type DeviceStatus struct {
@@ -146,7 +136,6 @@ type Bill struct {
 	Amount float64
 
 	BillTypeID uint
-	BillType   BillType
 }
 
 type BillType struct {

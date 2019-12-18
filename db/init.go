@@ -44,7 +44,6 @@ func Connect() *gorm.DB {
 var (
 	types = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
 	roles = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
-	// permissions = [...]Permission{Permission{}} s
 )
 
 func initData(db *gorm.DB) {
@@ -68,4 +67,8 @@ func initData(db *gorm.DB) {
 			db.Create(&newRole)
 		}
 	}
+}
+
+func initRoleAndPermission(db *gorm.DB) {
+	var ()
 }
