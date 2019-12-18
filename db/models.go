@@ -63,26 +63,11 @@ type Account struct {
 	StaffID int
 }
 
-type Permission struct {
-	gorm.Model
-	Name string
-
-	Roles []Role `gorm: "many2many:roles_permissions;"`
-}
-
 type Role struct {
 	gorm.Model
 	Name string
 
-	Staffs      []Staff
-	Permissions []Permission `gorm: "many2many:roles_permissions;"`
-}
-
-type RolePermission struct {
-	gorm.Model
-
-	RoleID       uint
-	PermissionID uint
+	Staffs []Staff
 }
 
 type Class struct {
