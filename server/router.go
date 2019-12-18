@@ -81,5 +81,22 @@ func StartRouter(db *gorm.DB) {
 		return service.GetClassWithId(c, db)
 	})
 
+	// Members
+	api.POST("/members", func(c echo.Context) error {
+		return service.CreateMember(c, db)
+	})
+
+	api.PUT("/members", func(c echo.Context) error {
+		return service.UpdateMember(c, db)
+	})
+
+	api.GET("/members", func(c echo.Context) error {
+		return service.GetAllMember(c, db)
+	})
+
+	api.GET("/members/:id", func(c echo.Context) error {
+		return service.GetMemberWithId(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }

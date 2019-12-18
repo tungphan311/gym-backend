@@ -19,7 +19,7 @@ func init() {
 	db := Connect()
 
 	db.AutoMigrate(
-		&Staff{}, &StaffType{}, &Role{}, &Account{}, &Role{},
+		&Staff{}, &StaffType{}, &Role{}, &Account{}, &Role{}, &Member{},
 		&Class{}, &ClassMember{}, &ClassType{},
 		&Device{}, &DeviceStatus{}, &DeviceType{},
 		&Bill{}, &BillType{}, &Parameter{}, &Mail{})

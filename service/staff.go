@@ -16,7 +16,7 @@ type StaffRequest struct {
 	BirthDate   string `json:"birthdate"`
 	Address     string `json:"address"`
 	Phone       string `json:"phone"`
-	RoleID      uint   `json: roleid`
+	RoleID      uint   `json:"roleid"`
 	Gender      int    `json:"gender"`
 	Email       string `json:"email"`
 	BeginDay    string `json:"beginday"`
