@@ -43,7 +43,7 @@ type Staff struct {
 	Gender    int
 	Email     string
 	BeginDay  time.Time
-	LastVisit time.Time
+	IsNew     bool
 
 	RoleID      uint
 	Role        Role

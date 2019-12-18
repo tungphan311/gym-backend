@@ -59,7 +59,7 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	begin, _ := time.Parse(format, staff.BeginDay)
 
 	newStaff := dbGorm.Staff{FullName: staff.FullName, BirthDate: dob, Address: staff.Address, Phone: staff.Phone,
-		RoleID: staff.RoleID, Gender: staff.Gender, Email: staff.Email, BeginDay: begin, StaffTypeID: staff.StaffTypeID}
+		RoleID: staff.RoleID, Gender: staff.Gender, Email: staff.Email, BeginDay: begin, StaffTypeID: staff.StaffTypeID, IsNew: true}
 
 	var createdStaff dbGorm.Staff
 	db.Create(&newStaff).Last(&createdStaff)
@@ -68,10 +68,12 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	newAccount := dbGorm.Account{StaffID: staffID, Username: staff.Email, Password: "password"}
 	db.Create(&newAccount)
 
+	SendRegisterMail(db, staff.Email, "password")
+
 	return c.JSON(http.StatusCreated, "OK")
 }
 
-func SendRegisterMail(db *gorm.DB) {
+func SendRegisterMail(db *gorm.DB, toEmail string, password string) {
 	var email dbGorm.Mail
 	db.Where(&dbGorm.Mail{Username: "thanhtunga1lqd@gmail.com"}).Find(&email)
 
@@ -92,9 +94,9 @@ func SendRegisterMail(db *gorm.DB) {
 		Username string
 		Password string
 	}{
-		Username: "quangnd@1ci.vn",
-		Password: "password",
+		Username: toEmail,
+		Password: password,
 	})
 
-	smtp.SendMail("smtp.gmail.com:587", gmailAuth, GMAIL_USERNAME, []string{"quangnd@1ci.vn"}, body.Bytes())
+	smtp.SendMail("smtp.gmail.com:587", gmailAuth, GMAIL_USERNAME, []string{toEmail}, body.Bytes())
 }

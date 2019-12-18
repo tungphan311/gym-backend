@@ -3,10 +3,11 @@ package service
 import (
 	"net/http"
 
+	db "gym-backend/db"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	db "gym-backend/db"
 )
 
 // AccountRequest is used to read create new account
@@ -51,9 +52,13 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	}
 
 	query := db.Account{Username: account.Username, Password: account.Password}
-	var user db.Account
+	var (
+		user  db.Account
+		staff db.Staff
+	)
 
 	dbGorm.Where(&query).Find(&user)
+	dbGorm.First(&db.Staff{}, user.StaffID).Find(&staff)
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -61,7 +66,9 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	// // set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = user.Username
-	claims["staffid"] = user.StaffID
+	claims["name"] = staff.FullName
+	claims["is_new"] = staff.IsNew
+	claims["roleid"] = staff.RoleID
 
 	// // Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte("secret"))

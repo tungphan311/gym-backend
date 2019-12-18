@@ -44,7 +44,5 @@ func StartRouter(db *gorm.DB) {
 		return service.CreateStaff(c, db)
 	})
 
-	service.SendRegisterMail(db)
-
 	e.Logger.Fatal(e.Start(":" + PORT))
 }
