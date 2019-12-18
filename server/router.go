@@ -44,5 +44,12 @@ func StartRouter(db *gorm.DB) {
 		return service.CreateStaff(c, db)
 	})
 
+	r := e.Group("/restricted")
+	r.Use(middleware.JWT([]byte("secret")))
+
+	r.GET("/staffs/:id", func(c echo.Context) error {
+		return service.GetStaff(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }

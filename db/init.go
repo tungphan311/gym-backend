@@ -42,9 +42,9 @@ func Connect() *gorm.DB {
 }
 
 var (
-	types    = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
-	roles    = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
-	accounts = [1]Account{Account{StaffID: 1, Username: "tungpt@gmail.com", Password: "password"}}
+	types = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
+	roles = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
+	// permissions = [...]Permission{Permission{}} s
 )
 
 func initData(db *gorm.DB) {
@@ -66,16 +66,6 @@ func initData(db *gorm.DB) {
 		for i := 0; i < len(roles); i++ {
 			newRole := roles[i]
 			db.Create(&newRole)
-		}
-	}
-
-	var account Account
-	db.Find(&account).Count(&count)
-
-	if count == 0 {
-		for i := 0; i < len(accounts); i++ {
-			newAccount := accounts[i]
-			db.Create(&newAccount)
 		}
 	}
 }

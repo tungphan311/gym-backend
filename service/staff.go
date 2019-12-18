@@ -1,15 +1,14 @@
 package service
 
 import (
-	"bytes"
 	"fmt"
-	"html/template"
 	"net/http"
-	"net/smtp"
 	"time"
 
 	dbGorm "gym-backend/db"
+	util "gym-backend/utils"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
@@ -25,6 +24,10 @@ type StaffRequest struct {
 	Email       string `json:"email"`
 	BeginDay    string `json:"beginday"`
 	StaffTypeID uint   `json:"stafftypeid"`
+}
+
+type StaffID struct {
+	ID int `json:"id"`
 }
 
 type ErrorResponse struct {
@@ -68,35 +71,28 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	newAccount := dbGorm.Account{StaffID: staffID, Username: staff.Email, Password: "password"}
 	db.Create(&newAccount)
 
-	SendRegisterMail(db, staff.Email, "password")
+	util.SendRegisterMail(db, staff.Email, "password")
 
 	return c.JSON(http.StatusCreated, "OK")
 }
 
-func SendRegisterMail(db *gorm.DB, toEmail string, password string) {
-	var email dbGorm.Mail
-	db.Where(&dbGorm.Mail{Username: "thanhtunga1lqd@gmail.com"}).Find(&email)
+func GetStaff(c echo.Context, db *gorm.DB) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	roleid := claims["roleid"].(uint)
 
-	GMAIL_USERNAME := email.Username
-	GMAIL_PASSWORD := email.Password
+	fmt.Println("%d", roleid)
 
-	gmailAuth := smtp.PlainAuth("", GMAIL_USERNAME, GMAIL_PASSWORD, "smtp.gmail.com")
+	staffID := new(StaffID)
 
-	t, _ := template.ParseFiles("template/register.html")
+	if err := c.Bind(staffID); err != nil {
+		return err
+	}
 
-	var body bytes.Buffer
+	var queryStaff dbGorm.Staff
+	db.Where(&dbGorm.Staff{}, staffID).Find(&queryStaff)
 
-	headers := "MINE-version: 1.0;\nContent-Type: text/html;"
+	fmt.Println("%v", queryStaff)
 
-	body.Write([]byte(fmt.Sprintf("Subject: GỬI THÔNG TIN ĐĂNG NHẬP\n%s\n\n", headers)))
-
-	t.Execute(&body, struct {
-		Username string
-		Password string
-	}{
-		Username: toEmail,
-		Password: password,
-	})
-
-	smtp.SendMail("smtp.gmail.com:587", gmailAuth, GMAIL_USERNAME, []string{toEmail}, body.Bytes())
+	return c.JSON(http.StatusOK, "Ok")
 }

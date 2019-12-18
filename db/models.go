@@ -85,6 +85,8 @@ type Role struct {
 type RolePermission struct {
 	gorm.Model
 
+	allow bool
+
 	RoleID       uint
 	PermissionID uint
 }
