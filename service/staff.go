@@ -1,7 +1,12 @@
 package service
 
 import (
+	"bytes"
+	"fmt"
+	"html/template"
+	"log"
 	"net/http"
+	"net/smtp"
 	"time"
 
 	dbGorm "gym-backend/db"
@@ -65,4 +70,36 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	db.Create(&newAccount)
 
 	return c.JSON(http.StatusCreated, "OK")
+}
+
+func SendRegisterMail(db *gorm.DB) {
+	var email dbGorm.Mail
+	db.Where(&dbGorm.Mail{Username: "thanhtunga1lqd@gmail.com"}).Find(&email)
+
+	GMAIL_USERNAME := email.Username
+	GMAIL_PASSWORD := email.Password
+
+	gmailAuth := smtp.PlainAuth("", GMAIL_USERNAME, GMAIL_PASSWORD, "smtp.gmail.com")
+
+	t, _ := template.ParseFiles("template/register.html")
+
+	var body bytes.Buffer
+
+	headers := "MINE-version: 1.0;\nContent-Type: text/html;"
+
+	body.Write([]byte(fmt.Sprintf("Subject: GỬI THÔNG TIN ĐĂNG NHẬP\n%s\n\n", headers)))
+
+	t.Execute(&body, struct {
+		Username string
+		Password string
+	}{
+		Username: "quangnd@1ci.vn",
+		Password: "password",
+	})
+
+	err := smtp.SendMail("smtp.gmail.com:587", gmailAuth, GMAIL_USERNAME, []string{"quangnd@1ci.vn"}, body.Bytes())
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }

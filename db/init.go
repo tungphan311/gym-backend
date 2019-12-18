@@ -23,7 +23,7 @@ func init() {
 		&Permission{}, &Role{}, &RolePermission{},
 		&Class{}, &ClassMember{}, &ClassType{},
 		&Device{}, &DeviceStatus{}, &DeviceType{},
-		&Bill{}, &BillType{}, &Parameter{})
+		&Bill{}, &BillType{}, &Parameter{}, &Mail{})
 
 	initData(db)
 }

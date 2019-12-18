@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type Mail struct {
+	Username string
+	Password string
+}
+
 type Member struct {
 	gorm.Model
 	FullName      string
@@ -38,6 +43,7 @@ type Staff struct {
 	Gender    int
 	Email     string
 	BeginDay  time.Time
+	LastVisit time.Time
 
 	RoleID      uint
 	Role        Role
