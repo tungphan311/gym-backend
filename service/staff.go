@@ -103,7 +103,7 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 	}
 
 	return c.JSON(http.StatusOK, staff)
-}	
+}
 
 func GetAllStaff(c echo.Context, db *gorm.DB) error {
 	staffs := []dbGorm.Staff{}
