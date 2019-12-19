@@ -137,45 +137,66 @@ func StartRouter(db *gorm.DB) {
 	})
 
 	// Devices type
-	api.POST("/devicestype", func(c echo.Context) error {
+	api.POST("/devicetypes", func(c echo.Context) error {
 		return service.CreateDeviceType(c, db)
 	})
 
-	api.PUT("/devicestype", func(c echo.Context) error {
+	api.PUT("/devicetypes", func(c echo.Context) error {
 		return service.UpdateDeviceType(c, db)
 	})
 
-	api.GET("/devicestype", func(c echo.Context) error {
+	api.GET("/devicetypes", func(c echo.Context) error {
 		return service.GetAllDeviceType(c, db)
 	})
 
-	api.GET("/devicestype/:id", func(c echo.Context) error {
+	api.GET("/devicetypes/:id", func(c echo.Context) error {
 		return service.GetDeviceTypeWithId(c, db)
 	})
 
-	api.GET("/devicestype/delete/:id", func(c echo.Context) error {
+	api.GET("/devicetypes/delete/:id", func(c echo.Context) error {
 		return service.DeactiveDeviceType(c, db)
 	})
 
 	// Devices status
-	api.POST("/devicesstatus", func(c echo.Context) error {
+	api.POST("/devicestatus", func(c echo.Context) error {
 		return service.CreateDeviceStatus(c, db)
 	})
 
-	api.PUT("/devicesstatus", func(c echo.Context) error {
+	api.PUT("/devicestatus", func(c echo.Context) error {
 		return service.UpdateDeviceStatus(c, db)
 	})
 
-	api.GET("/devicesstatus", func(c echo.Context) error {
+	api.GET("/devicestatus", func(c echo.Context) error {
 		return service.GetAllDeviceStatus(c, db)
 	})
 
-	api.GET("/devicesstatus/:id", func(c echo.Context) error {
+	api.GET("/devicestatus/:id", func(c echo.Context) error {
 		return service.GetDeviceStatusWithId(c, db)
 	})
 
-	api.GET("/devicesstatus/delete/:id", func(c echo.Context) error {
+	api.GET("/devicestatus/delete/:id", func(c echo.Context) error {
 		return service.DeactiveDeviceStatus(c, db)
+	})
+
+	// Class type
+	api.POST("/classtypes", func(c echo.Context) error {
+		return service.CreateClassType(c, db)
+	})
+
+	api.PUT("/classtypes", func(c echo.Context) error {
+		return service.UpdateClassType(c, db)
+	})
+
+	api.GET("/classtypes", func(c echo.Context) error {
+		return service.GetAllClassType(c, db)
+	})
+
+	api.GET("/classtypes/:id", func(c echo.Context) error {
+		return service.GetClassTypeWithId(c, db)
+	})
+
+	api.GET("/classtypes/delete/:id", func(c echo.Context) error {
+		return service.DeactiveClassType(c, db)
 	})
 
 	e.Logger.Fatal(e.Start(":" + PORT))
