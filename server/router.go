@@ -32,12 +32,17 @@ func StartRouter(db *gorm.DB) {
 		return c.String(http.StatusOK, "OOAD\ngym backend")
 	})
 
+	// Account
 	api.POST("/accounts", func(c echo.Context) error {
 		return service.CreateAccount(c, db)
 	})
 
 	api.POST("/login", func(c echo.Context) error {
 		return service.Login(c, db)
+	})
+
+	api.POST("/change-password", func(c echo.Context) error {
+		return service.ChangePassword(c, db)
 	})
 
 	// Staffs

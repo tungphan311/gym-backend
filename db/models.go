@@ -13,9 +13,9 @@ type Mail struct {
 
 type Member struct {
 	gorm.Model
-	FullName      string
+	FullName      string `gorm:DEFAULT CHARACTER SET utf8`
 	BirthDate     time.Time
-	Address       string
+	Address       string `gorm:DEFAULT CHARACTER SET utf8`
 	Phone         string
 	IdentityCard  string
 	ExpirationDay time.Time
@@ -28,16 +28,16 @@ type Member struct {
 
 type MemberStatus struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Members []Member
 }
 
 type Staff struct {
 	gorm.Model
-	FullName  string
+	FullName  string `gorm:DEFAULT CHARACTER SET utf8`
 	BirthDate time.Time
-	Address   string
+	Address   string `gorm:DEFAULT CHARACTER SET utf8`
 	Phone     string
 	Gender    int
 	Email     string
@@ -50,7 +50,7 @@ type Staff struct {
 
 type StaffType struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Staffs []Staff
 }
@@ -65,17 +65,17 @@ type Account struct {
 
 type Role struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Staffs []Staff
 }
 
 type Class struct {
 	gorm.Model
-	Name           string
+	Name           string `gorm:DEFAULT CHARACTER SET utf8`
 	Price          float64
 	DurationDays   int
-	ScheduleString string
+	ScheduleString string `gorm:DEFAULT CHARACTER SET utf8`
 
 	ClassTypeID uint
 	StaffID     uint
@@ -90,12 +90,12 @@ type ClassMember struct {
 
 type ClassType struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 }
 
 type Device struct {
 	gorm.Model
-	Name      string
+	Name      string `gorm:DEFAULT CHARACTER SET utf8`
 	InputDate time.Time
 
 	DeviceStatusID uint
@@ -104,14 +104,14 @@ type Device struct {
 
 type DeviceStatus struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Devices []Device
 }
 
 type DeviceType struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Devices []Device
 }
@@ -125,12 +125,12 @@ type Bill struct {
 
 type BillType struct {
 	gorm.Model
-	Name string
+	Name string `gorm:DEFAULT CHARACTER SET utf8`
 }
 
 type Parameter struct {
 	gorm.Model
-	Name        string
+	Name        string `gorm:DEFAULT CHARACTER SET utf8`
 	Value       float64
-	Description string
+	Description string `gorm:DEFAULT CHARACTER SET utf8`
 }

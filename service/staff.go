@@ -27,11 +27,6 @@ type StaffID struct {
 	ID int `json:"id"`
 }
 
-type ErrorResponse struct {
-	StatusCode uint
-	Message    string
-}
-
 const (
 	errMessage = "Email đã được đăng ký"
 )
@@ -73,33 +68,15 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	return c.JSON(http.StatusCreated, "Thêm nhân viên mới thành công")
 }
 
-// func GetStaff(c echo.Context, db *gorm.DB) error {
-// 	// user := c.Get("user").(*jwt.Token)
-// 	// // claims := user.Claims.(jwt.MapClaims)
-// 	// // roleid := claims["roleid"].(uint)
-
-// 	// fmt.Println("%d", roleid)
-
-// 	staffID := new(StaffID)
-
-// 	if err := c.Bind(staffID); err != nil {
-// 		return err
-// 	}
-
-// 	var queryStaff dbGorm.Staff
-// 	db.Where(&dbGorm.Staff{}, staffID).Find(&queryStaff)
-
-// 	fmt.Println("%v", queryStaff)
-
-// 	return c.JSON(http.StatusOK, queryStaff)
-// }
-
 func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 	id := c.Param("id")
 	staff := dbGorm.Staff{}
 	db.Where("id = ?", id).First(&staff)
 	if staff.ID == 0 {
-		return c.JSON(http.StatusBadRequest, "Không tìm thấy nhân viên.")
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Không tìm thấy nhân viên.",
+		})
 	}
 
 	return c.JSON(http.StatusOK, staff)

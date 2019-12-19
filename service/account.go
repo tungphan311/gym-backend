@@ -24,6 +24,12 @@ type LoginAccount struct {
 	Password string `json:"password"`
 }
 
+type ChangePasswordRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	StaffID  uint   `json:"staffid"`
+}
+
 // Accounts is used to read list records of account
 // type Accounts struct {
 // 	Account []Account `json:"accounts"`
@@ -48,10 +54,12 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	account := new(LoginAccount)
 
 	if err := c.Bind(account); err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng kiểm tra lại",
+		})
 	}
 
-	// query := db.Account{Username: account.Username, Password: account.Password}
 	var (
 		user  db.Account
 		staff db.Staff
@@ -81,6 +89,29 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,
 	})
+}
 
-	// return c.JSON(http.StatusOK, user)
+func ChangePassword(c echo.Context, dbGorm *gorm.DB) error {
+	account := new(ChangePasswordRequest)
+
+	if err := c.Bind(account); err != nil {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Thông tin không hợp lệ",
+		})
+	}
+
+	var queryAccount db.Account
+	dbGorm.Where(&db.Account{Username: account.Username}).First(&queryAccount)
+
+	queryAccount.Password = account.Password
+	dbGorm.Save(&queryAccount)
+
+	var staffQuery db.Staff
+	dbGorm.Where("id = ?", account.StaffID).First(&staffQuery)
+
+	staffQuery.IsNew = false
+	dbGorm.Save(staffQuery)
+
+	return c.JSON(http.StatusOK, "Cập nhật mật khẩu thành công")
 }
