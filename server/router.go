@@ -199,5 +199,26 @@ func StartRouter(db *gorm.DB) {
 		return service.DeactiveClassType(c, db)
 	})
 
+	// Bill
+	api.POST("/bills", func(c echo.Context) error {
+		return service.CreateBill(c, db)
+	})
+
+	api.PUT("/bills", func(c echo.Context) error {
+		return service.UpdateBill(c, db)
+	})
+
+	api.GET("/bills", func(c echo.Context) error {
+		return service.GetAllBill(c, db)
+	})
+
+	api.GET("/bills/:id", func(c echo.Context) error {
+		return service.GetBillWithId(c, db)
+	})
+
+	api.GET("/bills/delete/:id", func(c echo.Context) error {
+		return service.DeactiveBill(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }

@@ -22,7 +22,7 @@ func init() {
 		&Staff{}, &StaffType{}, &Role{}, &Account{}, &Role{}, &Member{},
 		&Class{}, &ClassMember{}, &ClassType{},
 		&Device{}, &DeviceStatus{}, &DeviceType{},
-		&Bill{}, &BillType{}, &Parameter{}, &Mail{})
+		&Bill{}, &Parameter{}, &Mail{})
 
 	initData(db)
 }

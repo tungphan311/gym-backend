@@ -131,16 +131,10 @@ type DeviceType struct {
 
 type Bill struct {
 	gorm.Model
-	Amount float64
+	Amount      float64
+	CreatedTime time.Time
 
-	BillTypeID uint
-	Active     bool `gorm:"DEFAULT:true"`
-}
-
-type BillType struct {
-	gorm.Model
-	Name   string `gorm:DEFAULT CHARACTER SET utf8`
-	Active bool   `gorm:"DEFAULT:true"`
+	Active bool `gorm:"DEFAULT:true"`
 }
 
 type Parameter struct {
