@@ -60,7 +60,7 @@ func GetMemberWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllMember(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Member{}
-	db.Find(&a)
+	db.Where(&dbGorm.Class{Active: true}).Find(&a)
 	return c.JSON(http.StatusOK, a)
 }
 

@@ -24,6 +24,7 @@ type Member struct {
 	Staff          Staff
 	MemberStatusID uint
 	Classes        []Class `gorm:"many2many:class_members;"`
+	Active         bool    `gorm:"DEFAULT:true"`
 }
 
 type MemberStatus struct {
@@ -31,6 +32,7 @@ type MemberStatus struct {
 	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Members []Member
+	Active  bool `gorm:"DEFAULT:true"`
 }
 
 type Staff struct {
@@ -46,6 +48,7 @@ type Staff struct {
 
 	RoleID      uint
 	StaffTypeID uint
+	Active      bool `gorm:"DEFAULT:true"`
 }
 
 type StaffType struct {
@@ -53,6 +56,7 @@ type StaffType struct {
 	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Staffs []Staff
+	Active bool `gorm:"DEFAULT:true"`
 }
 
 type Account struct {
@@ -61,6 +65,7 @@ type Account struct {
 	Password string
 
 	StaffID int
+	Active  bool `gorm:"DEFAULT:true"`
 }
 
 type Role struct {
@@ -68,6 +73,7 @@ type Role struct {
 	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Staffs []Staff
+	Active bool `gorm:"DEFAULT:true"`
 }
 
 type Class struct {
@@ -80,17 +86,20 @@ type Class struct {
 	ClassTypeID uint
 	StaffID     uint
 	Members     []Member `gorm:"many2many:class_members;"`
+	Active      bool     `gorm:"DEFAULT:true"`
 }
 
 type ClassMember struct {
 	gorm.Model
 	MemberID uint
 	ClassID  uint
+	Active   bool `gorm:"DEFAULT:true"`
 }
 
 type ClassType struct {
 	gorm.Model
-	Name string `gorm:DEFAULT CHARACTER SET utf8`
+	Name   string `gorm:DEFAULT CHARACTER SET utf8`
+	Active bool   `gorm:"DEFAULT:true"`
 }
 
 type Device struct {
@@ -100,6 +109,7 @@ type Device struct {
 
 	DeviceStatusID uint
 	DeviceTypeID   uint
+	Active         bool `gorm:"DEFAULT:true"`
 }
 
 type DeviceStatus struct {
@@ -107,6 +117,7 @@ type DeviceStatus struct {
 	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Devices []Device
+	Active  bool `gorm:"DEFAULT:true"`
 }
 
 type DeviceType struct {
@@ -114,6 +125,7 @@ type DeviceType struct {
 	Name string `gorm:DEFAULT CHARACTER SET utf8`
 
 	Devices []Device
+	Active  bool `gorm:"DEFAULT:true"`
 }
 
 type Bill struct {
@@ -121,11 +133,13 @@ type Bill struct {
 	Amount float64
 
 	BillTypeID uint
+	Active     bool `gorm:"DEFAULT:true"`
 }
 
 type BillType struct {
 	gorm.Model
-	Name string `gorm:DEFAULT CHARACTER SET utf8`
+	Name   string `gorm:DEFAULT CHARACTER SET utf8`
+	Active bool   `gorm:"DEFAULT:true"`
 }
 
 type Parameter struct {
@@ -133,4 +147,5 @@ type Parameter struct {
 	Name        string `gorm:DEFAULT CHARACTER SET utf8`
 	Value       float64
 	Description string `gorm:DEFAULT CHARACTER SET utf8`
+	Active      bool   `gorm:"DEFAULT:true"`
 }

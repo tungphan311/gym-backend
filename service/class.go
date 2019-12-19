@@ -51,7 +51,7 @@ func GetClassWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllClass(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Class{}
-	db.Find(&a)
+	db.Where(&dbGorm.Class{Active: true}).Find(&a)
 	return c.JSON(http.StatusOK, a)
 }
 

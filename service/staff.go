@@ -83,9 +83,9 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 }
 
 func GetAllStaff(c echo.Context, db *gorm.DB) error {
-	staffs := []dbGorm.Staff{}
-	db.Find(&staffs)
-	return c.JSON(http.StatusOK, staffs)
+	a := []dbGorm.Staff{}
+	db.Where(&dbGorm.Class{Active: true}).Find(&a)
+	return c.JSON(http.StatusOK, a)
 }
 
 func UpdateStaff(c echo.Context, db *gorm.DB) error {
