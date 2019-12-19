@@ -132,6 +132,8 @@ type DeviceType struct {
 type Bill struct {
 	gorm.Model
 	Amount      float64
+	MemberID    uint
+	StaffID     uint
 	CreatedTime time.Time
 
 	Active bool `gorm:"DEFAULT:true"`

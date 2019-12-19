@@ -12,8 +12,16 @@ import (
 
 type BillRequest struct {
 	ID          int     `json:"id"`
+	MemberID    uint    `json:"memberid"`
+	StaffID     uint    `json:"staffid"`
 	Amount      float64 `json:"amount"`
 	CreatedTime string  `json:"createdtime"`
+}
+
+type BuyClassRequest struct {
+	ClassID  uint `json:"classid"`
+	MemberID uint `json:"memberid"`
+	StaffID  uint `json:"staffid"`
 }
 
 func CreateBill(c echo.Context, db *gorm.DB) error {
@@ -29,6 +37,8 @@ func CreateBill(c echo.Context, db *gorm.DB) error {
 	n := dbGorm.Bill{
 		Amount:      r.Amount,
 		CreatedTime: createdTime,
+		MemberID:    r.MemberID,
+		StaffID:     r.StaffID,
 	}
 	db.Create(&n)
 	return c.JSON(http.StatusCreated, "Thêm hoá đơn mới thành công")
@@ -68,6 +78,8 @@ func UpdateBill(c echo.Context, db *gorm.DB) error {
 	db.Where("id = ?", r.ID).First(&q)
 	q.Amount = r.Amount
 	q.CreatedTime = createdTime
+	q.StaffID = r.StaffID
+	q.MemberID = r.MemberID
 	db.Save(&q)
 
 	return c.JSON(http.StatusOK, "OK")
@@ -88,4 +100,23 @@ func DeactiveBill(c echo.Context, db *gorm.DB) error {
 	db.Save(&n)
 
 	return c.JSON(http.StatusOK, "Ok")
+}
+
+func BuyClass(c echo.Context, db *gorm.DB) error {
+	r := new(BuyClassRequest)
+
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+
+	newBill := dbGorm.Bill{}
+	class := dbGorm.Class{}
+	db.Where("id = ?", r.ClassID).First(&class)
+	newBill.MemberID = r.MemberID
+	newBill.StaffID = r.StaffID
+	newBill.Amount = class.Price
+	newBill.CreatedTime = time.Now()
+	db.Create(&newBill)
+
+	return c.JSON(http.StatusOK, newBill)
 }

@@ -220,5 +220,9 @@ func StartRouter(db *gorm.DB) {
 		return service.DeactiveBill(c, db)
 	})
 
+	api.POST("/bills/buy", func(c echo.Context) error {
+		return service.BuyClass(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }
