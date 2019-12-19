@@ -16,7 +16,7 @@ type StaffRequest struct {
 	BirthDate   string `json:"birthdate"`
 	Address     string `json:"address"`
 	Phone       string `json:"phone"`
-	RoleID      uint   `json: roleid`
+	RoleID      uint   `json:"roleid"`
 	Gender      int    `json:"gender"`
 	Email       string `json:"email"`
 	BeginDay    string `json:"beginday"`
@@ -103,7 +103,7 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 	}
 
 	return c.JSON(http.StatusOK, staff)
-}	
+}
 
 func GetAllStaff(c echo.Context, db *gorm.DB) error {
 	staffs := []dbGorm.Staff{}
