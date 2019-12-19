@@ -84,7 +84,7 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllStaff(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Staff{}
-	db.Where(&dbGorm.Class{Active: true}).Find(&a)
+	db.Where(&dbGorm.Staff{Active: true}).Find(&a)
 	return c.JSON(http.StatusOK, a)
 }
 
@@ -111,6 +111,23 @@ func UpdateStaff(c echo.Context, db *gorm.DB) error {
 	queryStaff.RoleID = staff.RoleID
 	queryStaff.StaffTypeID = staff.RoleID
 	db.Save(&queryStaff)
+
+	return c.JSON(http.StatusOK, "Ok")
+}
+
+func DeactiveStaff(c echo.Context, db *gorm.DB) error {
+	id := c.Param("id")
+	staff := dbGorm.Staff{}
+	db.Where("id = ?", id).First(&staff)
+	if staff.ID == 0 {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Không tìm thấy nhân viên.",
+		})
+	}
+
+	staff.Active = false
+	db.Save(&staff)
 
 	return c.JSON(http.StatusOK, "Ok")
 }

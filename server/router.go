@@ -62,6 +62,10 @@ func StartRouter(db *gorm.DB) {
 		return service.GetStaffWithId(c, db)
 	})
 
+	api.GET("/staffs/delete/:id", func(c echo.Context) error {
+		return service.DeactiveStaff(c, db)
+	})
+
 	// r := e.Group("/restricted")
 	// r.Use(middleware.JWT([]byte("secret")))
 
@@ -86,6 +90,10 @@ func StartRouter(db *gorm.DB) {
 		return service.GetClassWithId(c, db)
 	})
 
+	api.GET("/classes/delete/:id", func(c echo.Context) error {
+		return service.DeactiveClass(c, db)
+	})
+
 	// Members
 	api.POST("/members", func(c echo.Context) error {
 		return service.CreateMember(c, db)
@@ -101,6 +109,10 @@ func StartRouter(db *gorm.DB) {
 
 	api.GET("/members/:id", func(c echo.Context) error {
 		return service.GetMemberWithId(c, db)
+	})
+
+	api.GET("/members/delete/:id", func(c echo.Context) error {
+		return service.DeactiveMember(c, db)
 	})
 
 	e.Logger.Fatal(e.Start(":" + PORT))

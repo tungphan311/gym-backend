@@ -63,7 +63,7 @@ func GetMemberWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllMember(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Member{}
-	db.Where(&dbGorm.Class{Active: true}).Find(&a)
+	db.Where(&dbGorm.Member{Active: true}).Find(&a)
 	return c.JSON(http.StatusOK, a)
 }
 
@@ -90,4 +90,21 @@ func UpdateMember(c echo.Context, db *gorm.DB) error {
 	q.MemberStatusID = r.MemberStatusID
 	db.Save(&q)
 	return c.JSON(http.StatusOK, "OK")
+}
+
+func DeactiveMember(c echo.Context, db *gorm.DB) error {
+	id := c.Param("id")
+	n := dbGorm.Member{}
+	db.Where("id = ?", id).First(&n)
+	if n.ID == 0 {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Không tìm thấy hội viên.",
+		})
+	}
+
+	n.Active = false
+	db.Save(&n)
+
+	return c.JSON(http.StatusOK, "Ok")
 }

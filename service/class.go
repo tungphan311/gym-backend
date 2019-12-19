@@ -78,3 +78,20 @@ func UpdateClass(c echo.Context, db *gorm.DB) error {
 
 	return c.JSON(http.StatusOK, "OK")
 }
+
+func DeactiveClass(c echo.Context, db *gorm.DB) error {
+	id := c.Param("id")
+	n := dbGorm.Member{}
+	db.Where("id = ?", id).First(&n)
+	if n.ID == 0 {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Không tìm thấy gói tập.",
+		})
+	}
+
+	n.Active = false
+	db.Save(&n)
+
+	return c.JSON(http.StatusOK, "Ok")
+}
