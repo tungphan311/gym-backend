@@ -75,7 +75,7 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = user.Username
 	claims["name"] = staff.FullName
-	claims["is_new"] = staff.IsNew
+	claims["isnew"] = staff.IsNew
 	claims["roleid"] = staff.RoleID
 
 	// // Generate encoded token and send it as response.
@@ -111,7 +111,7 @@ func ChangePassword(c echo.Context, dbGorm *gorm.DB) error {
 	dbGorm.Where("id = ?", account.StaffID).First(&staffQuery)
 
 	staffQuery.IsNew = false
-	dbGorm.Save(staffQuery)
+	dbGorm.Save(&staffQuery)
 
 	return c.JSON(http.StatusOK, "Cập nhật mật khẩu thành công")
 }
