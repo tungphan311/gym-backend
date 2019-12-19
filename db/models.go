@@ -87,6 +87,7 @@ type Class struct {
 	StaffID     uint
 	Members     []Member `gorm:"many2many:class_members;"`
 	Active      bool     `gorm:"DEFAULT:true"`
+	HasPt       bool
 }
 
 type ClassMember struct {

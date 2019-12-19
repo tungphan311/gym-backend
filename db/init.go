@@ -41,8 +41,19 @@ func Connect() *gorm.DB {
 }
 
 var (
-	types = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
-	roles = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
+	types      = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
+	roles      = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
+	classTypes = [3]ClassType{
+		ClassType{
+			Name: "CƠ BẢN",
+		},
+		ClassType{
+			Name: "NÂNG CAO",
+		},
+		ClassType{
+			Name: "SIÊU CẤP",
+		},
+	}
 )
 
 func initData(db *gorm.DB) {
@@ -66,8 +77,13 @@ func initData(db *gorm.DB) {
 			db.Create(&newRole)
 		}
 	}
-}
 
-func initRoleAndPermission(db *gorm.DB) {
-	var ()
+	var classType ClassType
+	db.Find(&classType).Count(&count)
+	if count == 0 {
+		for i := 0; i < len(classTypes); i++ {
+			newClassType := classTypes[i]
+			db.Create(&newClassType)
+		}
+	}
 }
