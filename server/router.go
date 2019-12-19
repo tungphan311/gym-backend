@@ -115,5 +115,68 @@ func StartRouter(db *gorm.DB) {
 		return service.DeactiveMember(c, db)
 	})
 
+	// Devices
+	api.POST("/devices", func(c echo.Context) error {
+		return service.CreateDevice(c, db)
+	})
+
+	api.PUT("/devices", func(c echo.Context) error {
+		return service.UpdateDevice(c, db)
+	})
+
+	api.GET("/devices", func(c echo.Context) error {
+		return service.GetAllDevice(c, db)
+	})
+
+	api.GET("/devices/:id", func(c echo.Context) error {
+		return service.GetDeviceWithId(c, db)
+	})
+
+	api.GET("/devices/delete/:id", func(c echo.Context) error {
+		return service.DeactiveDevice(c, db)
+	})
+
+	// Devices type
+	api.POST("/devicestype", func(c echo.Context) error {
+		return service.CreateDeviceType(c, db)
+	})
+
+	api.PUT("/devicestype", func(c echo.Context) error {
+		return service.UpdateDeviceType(c, db)
+	})
+
+	api.GET("/devicestype", func(c echo.Context) error {
+		return service.GetAllDeviceType(c, db)
+	})
+
+	api.GET("/devicestype/:id", func(c echo.Context) error {
+		return service.GetDeviceTypeWithId(c, db)
+	})
+
+	api.GET("/devicestype/delete/:id", func(c echo.Context) error {
+		return service.DeactiveDeviceType(c, db)
+	})
+
+	// Devices status
+	api.POST("/devicesstatus", func(c echo.Context) error {
+		return service.CreateDeviceStatus(c, db)
+	})
+
+	api.PUT("/devicesstatus", func(c echo.Context) error {
+		return service.UpdateDeviceStatus(c, db)
+	})
+
+	api.GET("/devicesstatus", func(c echo.Context) error {
+		return service.GetAllDeviceStatus(c, db)
+	})
+
+	api.GET("/devicesstatus/:id", func(c echo.Context) error {
+		return service.GetDeviceStatusWithId(c, db)
+	})
+
+	api.GET("/devicesstatus/delete/:id", func(c echo.Context) error {
+		return service.DeactiveDeviceStatus(c, db)
+	})
+
 	e.Logger.Fatal(e.Start(":" + PORT))
 }

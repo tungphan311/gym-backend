@@ -40,7 +40,7 @@ func CreateClass(c echo.Context, db *gorm.DB) error {
 
 func GetClassWithId(c echo.Context, db *gorm.DB) error {
 	id := c.Param("id")
-	q := dbGorm.Staff{}
+	q := dbGorm.Class{}
 	db.Where("id = ?", id).First(&q)
 	if q.ID == 0 {
 		return c.JSON(http.StatusBadRequest, &ErrorResponse{
@@ -81,7 +81,7 @@ func UpdateClass(c echo.Context, db *gorm.DB) error {
 
 func DeactiveClass(c echo.Context, db *gorm.DB) error {
 	id := c.Param("id")
-	n := dbGorm.Member{}
+	n := dbGorm.Class{}
 	db.Where("id = ?", id).First(&n)
 	if n.ID == 0 {
 		return c.JSON(http.StatusBadRequest, &ErrorResponse{
