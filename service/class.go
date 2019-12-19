@@ -43,7 +43,10 @@ func GetClassWithId(c echo.Context, db *gorm.DB) error {
 	q := dbGorm.Staff{}
 	db.Where("id = ?", id).First(&q)
 	if q.ID == 0 {
-		return c.JSON(http.StatusBadRequest, "Không tìm thấy nhân viên.")
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Không tìm thấy dữ liệu.",
+		})
 	}
 
 	return c.JSON(http.StatusOK, q)
