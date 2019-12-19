@@ -17,7 +17,6 @@ type ClassRequest struct {
 	ScheduleString string  `json:"schedulestring"`
 	ClassTypeID    uint    `json:"classtypeid"`
 	StaffID        uint    `json:"staffid"`
-	HasPt          bool    `json:"haspt"`
 }
 
 func CreateClass(c echo.Context, db *gorm.DB) error {
@@ -34,7 +33,6 @@ func CreateClass(c echo.Context, db *gorm.DB) error {
 		ScheduleString: r.ScheduleString,
 		ClassTypeID:    r.ClassTypeID,
 		StaffID:        r.StaffID,
-		HasPt:          r.HasPt,
 	}
 	db.Create(&n)
 	return c.JSON(http.StatusCreated, "Thêm gói tập mới thành công")
@@ -45,6 +43,21 @@ func GetClassWithId(c echo.Context, db *gorm.DB) error {
 	q := dbGorm.Class{}
 	db.Where("id = ?", id).First(&q)
 	if q.ID == 0 {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Không tìm thấy dữ liệu.",
+		})
+	}
+
+	return c.JSON(http.StatusOK, q)
+}
+
+func GetClassWithClassTypeId(c echo.Context, db *gorm.DB) error {
+	id := c.Param("id")
+	q := []dbGorm.Class{}
+	db.Where("class_type_id = ?", id).Find(&q)
+
+	if len(q) == 0 {
 		return c.JSON(http.StatusBadRequest, &ErrorResponse{
 			StatusCode: http.StatusBadRequest,
 			Message:    "Không tìm thấy dữ liệu.",
@@ -76,10 +89,9 @@ func UpdateClass(c echo.Context, db *gorm.DB) error {
 	q.ScheduleString = r.ScheduleString
 	q.ClassTypeID = r.ClassTypeID
 	q.StaffID = r.StaffID
-	q.HasPt = r.HasPt
 	db.Save(&q)
 
-	return c.JSON(http.StatusOK, "OK")
+	return c.JSON(http.StatusOK, "Cập nhật thông tin gói tập thành công")
 }
 
 func DeactiveClass(c echo.Context, db *gorm.DB) error {

@@ -43,7 +43,10 @@ func Connect() *gorm.DB {
 var (
 	types      = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
 	roles      = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
-	classTypes = [3]ClassType{
+	classTypes = [4]ClassType{
+		ClassType{
+			Name: "THEO NGÀY",
+		},
 		ClassType{
 			Name: "CƠ BẢN",
 		},

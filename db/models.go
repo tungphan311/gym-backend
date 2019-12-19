@@ -82,12 +82,10 @@ type Class struct {
 	Price          float64
 	DurationDays   int
 	ScheduleString string `gorm:DEFAULT CHARACTER SET utf8`
-
-	ClassTypeID uint
-	StaffID     uint
-	Members     []Member `gorm:"many2many:class_members;"`
-	Active      bool     `gorm:"DEFAULT:true"`
-	HasPt       bool
+	ClassTypeID    uint
+	StaffID        uint
+	Members        []Member `gorm:"many2many:class_members;"`
+	Active         bool     `gorm:"DEFAULT:true"`
 }
 
 type ClassMember struct {

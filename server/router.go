@@ -58,6 +58,10 @@ func StartRouter(db *gorm.DB) {
 		return service.GetAllStaff(c, db)
 	})
 
+	api.GET("/staffs/filter", func(c echo.Context) error {
+		return service.FilterStaff(c, db)
+	})
+
 	api.GET("/staffs/:id", func(c echo.Context) error {
 		return service.GetStaffWithId(c, db)
 	})
@@ -88,6 +92,10 @@ func StartRouter(db *gorm.DB) {
 
 	api.GET("/classes/:id", func(c echo.Context) error {
 		return service.GetClassWithId(c, db)
+	})
+
+	api.GET("/classes/classtype/:id", func(c echo.Context) error {
+		return service.GetClassWithClassTypeId(c, db)
 	})
 
 	api.GET("/classes/delete/:id", func(c echo.Context) error {

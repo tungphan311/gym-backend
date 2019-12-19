@@ -23,6 +23,12 @@ type StaffRequest struct {
 	StaffTypeID uint   `json:"stafftypeid"`
 }
 
+type StaffFilter struct {
+	RoleID      uint `json:"roleid"`
+	StaffTypeID uint `json:"stafftypeid"`
+	Gender      int  `json:"gender"`
+}
+
 type StaffID struct {
 	ID int `json:"id"`
 }
@@ -36,7 +42,10 @@ func CreateStaff(c echo.Context, db *gorm.DB) error {
 	staff := new(StaffRequest)
 
 	if err := c.Bind(staff); err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Thông tin không hợp lệ",
+		})
 	}
 
 	var queryStaff dbGorm.Staff
@@ -72,6 +81,7 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 	id := c.Param("id")
 	staff := dbGorm.Staff{}
 	db.Where("id = ?", id).First(&staff)
+
 	if staff.ID == 0 {
 		return c.JSON(http.StatusBadRequest, &ErrorResponse{
 			StatusCode: http.StatusBadRequest,
@@ -79,12 +89,42 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, staff)
+	dob := staff.BirthDate.Format("02/01/2006")
+	begin := staff.BeginDay.Format("02/01/2006")
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"fullname":    staff.FullName,
+		"birthdate":   dob,
+		"address":     staff.Address,
+		"phone":       staff.Phone,
+		"roleid":      string(staff.RoleID),
+		"gender":      string(staff.Gender),
+		"email":       staff.Email,
+		"beginday":    begin,
+		"stafftypeid": string(staff.StaffTypeID),
+	})
 }
 
 func GetAllStaff(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Staff{}
 	db.Where(&dbGorm.Staff{Active: true}).Find(&a)
+	return c.JSON(http.StatusOK, a)
+}
+
+func FilterStaff(c echo.Context, db *gorm.DB) error {
+	staff := new(StaffFilter)
+
+	if err := c.Bind(staff); err != nil {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Thông tin không hợp lệ",
+		})
+	}
+
+	a := []dbGorm.Staff{}
+
+	db.Where(&dbGorm.Staff{Active: true, Gender: staff.Gender, RoleID: staff.RoleID, StaffTypeID: staff.StaffTypeID}).Find(&a)
+
 	return c.JSON(http.StatusOK, a)
 }
 
