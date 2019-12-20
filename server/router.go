@@ -115,6 +115,10 @@ func StartRouter(db *gorm.DB) {
 		return service.GetAllMember(c, db)
 	})
 
+	api.GET("/members/recently", func(c echo.Context) error {
+		return service.GetRecentMember(c, db)
+	})
+
 	api.GET("/members/:id", func(c echo.Context) error {
 		return service.GetMemberWithId(c, db)
 	})
