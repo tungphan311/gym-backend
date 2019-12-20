@@ -41,9 +41,10 @@ func Connect() *gorm.DB {
 }
 
 var (
-	types      = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
-	roles      = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
-	classTypes = [4]ClassType{
+	types          = [2]StaffType{StaffType{Name: "fulltime"}, StaffType{Name: "partime"}}
+	devicestatuses = [3]DeviceStatus{DeviceStatus{Name: "Mới"}, DeviceStatus{Name: "Cũ"}, DeviceStatus{Name: "Đã hỏng"}}
+	roles          = [5]Role{Role{Name: "admin"}, Role{Name: "trainer"}, Role{Name: "receptionist"}, Role{Name: "accountant"}, Role{Name: "equipment manager"}}
+	classTypes     = [4]ClassType{
 		ClassType{
 			Name: "THEO NGÀY",
 		},
@@ -118,6 +119,15 @@ func initData(db *gorm.DB) {
 		for i := 0; i < len(classes); i++ {
 			newClass := classes[i]
 			db.Create(&newClass)
+		}
+	}
+
+	var dvs DeviceStatus
+	db.Find(&dvs).Count(&count)
+	if count == 0 {
+		for i := 0; i < len(devicestatuses); i++ {
+			n := devicestatuses[i]
+			db.Create(&n)
 		}
 	}
 }
