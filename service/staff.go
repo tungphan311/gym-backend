@@ -90,20 +90,10 @@ func GetStaffWithId(c echo.Context, db *gorm.DB) error {
 		})
 	}
 
-	dob := staff.BirthDate.Format("02/01/2006")
-	begin := staff.BeginDay.Format("02/01/2006")
+	// dob := staff.BirthDate.Format("02/01/2006")
+	// begin := staff.BeginDay.Format("02/01/2006")
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"fullname":    staff.FullName,
-		"birthdate":   dob,
-		"address":     staff.Address,
-		"phone":       staff.Phone,
-		"roleid":      string(staff.RoleID),
-		"gender":      string(staff.Gender),
-		"email":       staff.Email,
-		"beginday":    begin,
-		"stafftypeid": string(staff.StaffTypeID),
-	})
+	return c.JSON(http.StatusOK, staff)
 }
 
 func GetAllStaff(c echo.Context, db *gorm.DB) error {
