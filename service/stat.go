@@ -36,6 +36,9 @@ func GetStatsRecentMonth(c echo.Context, db *gorm.DB) error {
 }
 
 type StatsDashboardResponse struct {
+	TodayMember                   int
+	MonthMember                   int
+	TotalMember                   int
 	TodayBillCount                int
 	MonthBillsCount               int
 	TodayMoney                    float32
@@ -70,6 +73,13 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 		}
 	}
 
+	var todayMembers []dbGorm.Member
+	for _, b := range allMembers {
+		if b.CreatedAt == time.Now() {
+			_ = append(todayMembers, b)
+		}
+	}
+
 	// Get this month bills
 	var (
 		monthBills []dbGorm.Bill
@@ -80,6 +90,15 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 			b.CreatedTime.Year() == time.Now().Year() {
 			_ = append(monthBills, b)
 			monthMoney += b.Amount
+		}
+	}
+
+	// Get this month members
+	var monthMembers []dbGorm.Member
+	for _, b := range allMembers {
+		if b.CreatedAt.Month() == time.Now().Month() &&
+			b.CreatedAt.Year() == time.Now().Year() {
+			_ = append(monthMembers, b)
 		}
 	}
 
@@ -98,10 +117,18 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 		lastYear -= 1
 	}
 	for _, b := range allBills {
-		if lastMonth == int(time.Now().Month()) &&
-			lastYear == int(time.Now().Year()) {
+		if lastMonth == int(b.CreatedAt.Month()) &&
+			lastYear == int(b.CreatedAt.Year()) {
 			_ = append(lastMonthBills, b)
 			lastMonthMoney += b.Amount
+		}
+	}
+
+	var lastMembers []dbGorm.Member
+	for _, b := range allMembers {
+		if lastMonth == int(b.CreatedAt.Month()) &&
+			lastYear == int(b.CreatedAt.Year()) {
+			_ = append(lastMembers, b)
 		}
 	}
 
@@ -121,6 +148,9 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	result.TotalMoney = float32(totalMoney)
 	increasedMoney := float32(monthMoney - lastMonthMoney)
 	increasedBills := float32(len(monthBills) - len(lastMonthBills))
+	result.TodayMember = len(todayMembers)
+	result.MonthMember = len(monthMembers)
+	result.TotalMember = len(allMembers)
 
 	if increasedBills >= 0 {
 		result.IncreaseMonthBillCount = increasedBills
