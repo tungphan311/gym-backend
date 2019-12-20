@@ -43,7 +43,7 @@ type Staff struct {
 	Phone     string
 	Gender    int
 	Email     string
-	BeginDay  time.Time
+	BeginDay  time.Time	
 	IsNew     bool
 
 	RoleID      uint
