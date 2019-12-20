@@ -51,9 +51,9 @@ func CreateAccount(c echo.Context, dbGorm *gorm.DB) error {
 
 // Login is used to authenticate user
 func Login(c echo.Context, dbGorm *gorm.DB) error {
-	account := new(LoginAccount)
+	r := new(LoginAccount)
 
-	if err := c.Bind(account); err != nil {
+	if err := c.Bind(r); err != nil {
 		return c.JSON(http.StatusBadRequest, &ErrorResponse{
 			StatusCode: http.StatusBadRequest,
 			Message:    "Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng kiểm tra lại",
@@ -65,7 +65,14 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 		staff db.Staff
 	)
 
-	dbGorm.Where("username = ?", account.Username).First(&user)
+	dbGorm.Where(&db.Account{Username: r.Username, Password: r.Password}).First(&user)
+	if user.ID == 0 {
+		return c.JSON(http.StatusBadRequest, &ErrorResponse{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng kiểm tra lại",
+		})
+	}
+
 	dbGorm.Where("id = ?", user.StaffID).First(&staff)
 
 	// Create token
@@ -78,7 +85,6 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	claims["isnew"] = staff.IsNew
 	claims["roleid"] = staff.RoleID
 	claims["staffid"] = staff.ID
-
 
 	// // Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte("secret"))
