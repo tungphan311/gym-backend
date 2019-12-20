@@ -58,7 +58,7 @@ func StartRouter(db *gorm.DB) {
 		return service.GetAllStaff(c, db)
 	})
 
-	api.GET("/staffs/filter", func(c echo.Context) error {
+	api.POST("/staffs/filter", func(c echo.Context) error {
 		return service.FilterStaff(c, db)
 	})
 
