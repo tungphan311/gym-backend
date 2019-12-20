@@ -77,6 +77,8 @@ func Login(c echo.Context, dbGorm *gorm.DB) error {
 	claims["name"] = staff.FullName
 	claims["isnew"] = staff.IsNew
 	claims["roleid"] = staff.RoleID
+	claims["staffid"] = staff.ID
+
 
 	// // Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte("secret"))
