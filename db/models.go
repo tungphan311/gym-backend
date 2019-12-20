@@ -100,9 +100,11 @@ type Device struct {
 	Name      string `gorm:DEFAULT CHARACTER SET utf8`
 	InputDate time.Time
 
+	DeviceID       uint
 	DeviceStatusID uint
 	DeviceTypeID   uint
 	Description    string
+	Note           string
 	Active         bool `gorm:"DEFAULT:true"`
 }
 

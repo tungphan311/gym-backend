@@ -16,9 +16,11 @@ type DeviceRequest struct {
 	Name      string `json:"name"`
 	InputDate string `json:"inputdate"`
 
+	DeviceID       uint   `json:"deviceid"`
 	DeviceStatusID uint   `json:"devicestatusid"`
 	DeviceTypeID   uint   `json:"devicetypeid"`
 	Description    string `json:"description"`
+	Note           string `json:"note"`
 	Active         bool   `json:"active"`
 }
 
@@ -38,6 +40,8 @@ func CreateDevice(c echo.Context, db *gorm.DB) error {
 		DeviceStatusID: r.DeviceStatusID,
 		DeviceTypeID:   r.DeviceTypeID,
 		Description:    r.Description,
+		Note:           r.Note,
+		DeviceID:       r.DeviceID,
 		Active:         r.Active,
 	}
 	db.Create(&n)
@@ -89,6 +93,8 @@ func UpdateDevice(c echo.Context, db *gorm.DB) error {
 	q.DeviceStatusID = r.DeviceStatusID
 	q.DeviceTypeID = r.DeviceTypeID
 	q.Description = r.Description
+	q.DeviceID = r.DeviceID
+	q.Note = r.Note
 	db.Save(&q)
 
 	return c.JSON(http.StatusOK, "OK")
