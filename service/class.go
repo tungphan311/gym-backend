@@ -2,6 +2,7 @@ package service
 
 import (
 	"net/http"
+	"strconv"
 
 	dbGorm "gym-backend/db"
 
@@ -69,7 +70,16 @@ func GetClassWithClassTypeId(c echo.Context, db *gorm.DB) error {
 
 func GetAllClass(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Class{}
-	db.Where(&dbGorm.Class{Active: true}).Find(&a)
+	//db.Where(&dbGorm.Class{Active: true}).Find(&a)
+
+	haspt, _ := strconv.ParseBool(c.QueryParam("haspt"))
+	classtypeid, _ := strconv.ParseUint(c.QueryParam("classtypeid"), 10, 64)
+	db.Where(&dbGorm.Class{
+		Active:      true,
+		Haspt:       haspt,
+		ClassTypeID: uint(classtypeid),
+	}).Find(&a)
+
 	return c.JSON(http.StatusOK, a)
 }
 

@@ -2,6 +2,7 @@ package service
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	dbGorm "gym-backend/db"
@@ -57,7 +58,15 @@ func GetDeviceWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllDevice(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Device{}
-	db.Where(&dbGorm.Device{Active: true}).Find(&a)
+	
+	devicetypeid, _ := strconv.ParseUint(c.QueryParam("devicetypeid"), 10, 64)
+	devicestatusid, _ := strconv.ParseUint(c.QueryParam("devicestatusid"), 10, 64)
+	db.Where(&dbGorm.Device{
+		Active:         true,
+		DeviceTypeID:   uint(devicetypeid),
+		DeviceStatusID: uint(devicestatusid),
+	}).Find(&a)
+
 	return c.JSON(http.StatusOK, a)
 }
 

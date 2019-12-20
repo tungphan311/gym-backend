@@ -2,6 +2,7 @@ package service
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	dbGorm "gym-backend/db"
@@ -14,6 +15,7 @@ type BillRequest struct {
 	ID          int     `json:"id"`
 	MemberID    uint    `json:"memberid"`
 	StaffID     uint    `json:"staffid"`
+	ClassID     uint    `json:"classid"`
 	Amount      float64 `json:"amount"`
 	CreatedTime string  `json:"createdtime"`
 }
@@ -39,6 +41,7 @@ func CreateBill(c echo.Context, db *gorm.DB) error {
 		CreatedTime: createdTime,
 		MemberID:    r.MemberID,
 		StaffID:     r.StaffID,
+		ClassID:     r.ClassID,
 	}
 	db.Create(&n)
 	return c.JSON(http.StatusCreated, "Thêm hoá đơn mới thành công")
@@ -60,7 +63,16 @@ func GetBillWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllBill(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Bill{}
-	db.Where(&dbGorm.Bill{Active: true}).Find(&a)
+
+	classid, _ := strconv.ParseUint(c.QueryParam("classid"), 10, 64)
+	memberid, _ := strconv.ParseUint(c.QueryParam("memberid"), 10, 64)
+	staffid, _ := strconv.ParseUint(c.QueryParam("staffid"), 10, 64)
+	db.Where(&dbGorm.Bill{
+		Active:   true,
+		ClassID:  uint(classid),
+		MemberID: uint(memberid),
+		StaffID:  uint(staffid),
+	}).Find(&a)
 	return c.JSON(http.StatusOK, a)
 }
 
@@ -80,6 +92,7 @@ func UpdateBill(c echo.Context, db *gorm.DB) error {
 	q.CreatedTime = createdTime
 	q.StaffID = r.StaffID
 	q.MemberID = r.MemberID
+	q.ClassID = r.ClassID
 	db.Save(&q)
 
 	return c.JSON(http.StatusOK, "OK")
@@ -115,6 +128,7 @@ func BuyClass(c echo.Context, db *gorm.DB) error {
 	newBill.MemberID = r.MemberID
 	newBill.StaffID = r.StaffID
 	newBill.Amount = class.Price
+	newBill.ClassID = r.ClassID
 	newBill.CreatedTime = time.Now()
 	db.Create(&newBill)
 

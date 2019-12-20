@@ -2,6 +2,7 @@ package service
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	dbGorm "gym-backend/db"
@@ -67,7 +68,17 @@ func GetMemberWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllMember(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Member{}
-	db.Where(&dbGorm.Member{Active: true}).Find(&a)
+
+	isactive, _ := strconv.ParseBool(c.QueryParam("isactive"))
+	gender, _ := strconv.ParseUint(c.QueryParam("gender"), 10, 64)
+	staffid, _ := strconv.ParseUint(c.QueryParam("staffid"), 10, 64)
+	db.Where(&dbGorm.Member{
+		Active:   true,
+		IsActive: isactive,
+		StaffID:  uint(staffid),
+		Gender:   int(gender),
+	}).Find(&a)
+
 	return c.JSON(http.StatusOK, a)
 }
 
