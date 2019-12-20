@@ -83,9 +83,9 @@ type Class struct {
 	DurationDays   int
 	ScheduleString string `gorm:DEFAULT CHARACTER SET utf8`
 	ClassTypeID    uint
-	StaffID        uint
 	Members        []Member `gorm:"many2many:class_members;"`
-	Active         bool     `gorm:"DEFAULT:true"`
+	Haspt          bool
+	Active         bool `gorm:"DEFAULT:true"`
 }
 
 type ClassMember struct {

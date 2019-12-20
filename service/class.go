@@ -16,7 +16,7 @@ type ClassRequest struct {
 	DurationDays   int     `json:"durationdays"`
 	ScheduleString string  `json:"schedulestring"`
 	ClassTypeID    uint    `json:"classtypeid"`
-	StaffID        uint    `json:"staffid"`
+	Haspt          bool    `json:"haspt"`
 }
 
 func CreateClass(c echo.Context, db *gorm.DB) error {
@@ -32,7 +32,7 @@ func CreateClass(c echo.Context, db *gorm.DB) error {
 		DurationDays:   r.DurationDays,
 		ScheduleString: r.ScheduleString,
 		ClassTypeID:    r.ClassTypeID,
-		StaffID:        r.StaffID,
+		Haspt:          r.Haspt,
 	}
 	db.Create(&n)
 	return c.JSON(http.StatusCreated, "Thêm gói tập mới thành công")
@@ -88,7 +88,7 @@ func UpdateClass(c echo.Context, db *gorm.DB) error {
 	q.DurationDays = r.DurationDays
 	q.ScheduleString = r.ScheduleString
 	q.ClassTypeID = r.ClassTypeID
-	q.StaffID = r.StaffID
+	q.Haspt = r.Haspt
 	db.Save(&q)
 
 	return c.JSON(http.StatusOK, "Cập nhật thông tin gói tập thành công")
