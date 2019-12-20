@@ -20,19 +20,11 @@ type Member struct {
 	IdentityCard  string
 	ExpirationDay time.Time
 
-	StaffID        uint
-	Staff          Staff
-	MemberStatusID uint
-	Classes        []Class `gorm:"many2many:class_members;"`
-	Active         bool    `gorm:"DEFAULT:true"`
-}
-
-type MemberStatus struct {
-	gorm.Model
-	Name string `gorm:DEFAULT CHARACTER SET utf8`
-
-	Members []Member
-	Active  bool `gorm:"DEFAULT:true"`
+	StaffID  uint
+	Staff    Staff
+	IsActive bool
+	Classes  []Class `gorm:"many2many:class_members;"`
+	Active   bool    `gorm:"DEFAULT:true"`
 }
 
 type Staff struct {
@@ -43,7 +35,7 @@ type Staff struct {
 	Phone     string
 	Gender    int
 	Email     string
-	BeginDay  time.Time	
+	BeginDay  time.Time
 	IsNew     bool
 
 	RoleID      uint

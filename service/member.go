@@ -11,15 +11,15 @@ import (
 )
 
 type MemberRequest struct {
-	ID             int    `json:"id"`
-	FullName       string `json:"fullname"`
-	BirthDate      string `json:"birthdate"`
-	Address        string `json:"address"`
-	Phone          string `json:"phone"`
-	IdentityCard   string `json:"identitycard"`
-	ExpirationDay  string `json:"expirationday"`
-	StaffID        uint   `json:"staffid"`
-	MemberStatusID uint   `json:"memberstatusid"`
+	ID            int    `json:"id"`
+	FullName      string `json:"fullname"`
+	BirthDate     string `json:"birthdate"`
+	Address       string `json:"address"`
+	Phone         string `json:"phone"`
+	IdentityCard  string `json:"identitycard"`
+	ExpirationDay string `json:"expirationday"`
+	StaffID       uint   `json:"staffid"`
+	IsActive      bool   `json:"isactive"`
 }
 
 func CreateMember(c echo.Context, db *gorm.DB) error {
@@ -34,14 +34,14 @@ func CreateMember(c echo.Context, db *gorm.DB) error {
 	exd, _ := time.Parse(format, r.ExpirationDay)
 
 	n := dbGorm.Member{
-		FullName:       r.FullName,
-		BirthDate:      dob,
-		Address:        r.Address,
-		Phone:          r.Phone,
-		IdentityCard:   r.IdentityCard,
-		ExpirationDay:  exd,
-		StaffID:        r.StaffID,
-		MemberStatusID: r.MemberStatusID,
+		FullName:      r.FullName,
+		BirthDate:     dob,
+		Address:       r.Address,
+		Phone:         r.Phone,
+		IdentityCard:  r.IdentityCard,
+		ExpirationDay: exd,
+		StaffID:       r.StaffID,
+		IsActive:      r.IsActive,
 	}
 	db.Create(&n)
 	return c.JSON(http.StatusCreated, "Thêm hội viên mới thành công")
@@ -87,7 +87,7 @@ func UpdateMember(c echo.Context, db *gorm.DB) error {
 	q.IdentityCard = r.IdentityCard
 	q.ExpirationDay = exd
 	q.StaffID = r.StaffID
-	q.MemberStatusID = r.MemberStatusID
+	q.IsActive = r.IsActive
 	db.Save(&q)
 	return c.JSON(http.StatusOK, "OK")
 }
