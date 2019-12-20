@@ -20,6 +20,8 @@ type MemberRequest struct {
 	ExpirationDay string `json:"expirationday"`
 	StaffID       uint   `json:"staffid"`
 	IsActive      bool   `json:"isactive"`
+	Gender        int    `json:"gender"`
+	Email         string `json:"email"`
 }
 
 func CreateMember(c echo.Context, db *gorm.DB) error {
@@ -42,6 +44,8 @@ func CreateMember(c echo.Context, db *gorm.DB) error {
 		ExpirationDay: exd,
 		StaffID:       r.StaffID,
 		IsActive:      r.IsActive,
+		Gender:        r.Gender,
+		Email:         r.Email,
 	}
 	db.Create(&n)
 	return c.JSON(http.StatusCreated, "Thêm hội viên mới thành công")
@@ -88,6 +92,8 @@ func UpdateMember(c echo.Context, db *gorm.DB) error {
 	q.ExpirationDay = exd
 	q.StaffID = r.StaffID
 	q.IsActive = r.IsActive
+	q.Gender = r.Gender
+	q.Email = r.Email
 	db.Save(&q)
 	return c.JSON(http.StatusOK, "OK")
 }

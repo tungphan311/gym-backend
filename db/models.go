@@ -19,6 +19,8 @@ type Member struct {
 	Phone         string
 	IdentityCard  string
 	ExpirationDay time.Time
+	Email         string
+	Gender        int
 
 	StaffID  uint
 	Staff    Staff
