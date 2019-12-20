@@ -68,7 +68,7 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	)
 	for _, b := range allBills {
 		if b.CreatedTime == time.Now() {
-			_ = append(todayBills, b)
+			todayBills = append(todayBills, b)
 			todayMoney += b.Amount
 		}
 	}
@@ -76,7 +76,7 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	var todayMembers []dbGorm.Member
 	for _, b := range allMembers {
 		if b.CreatedAt == time.Now() {
-			_ = append(todayMembers, b)
+			todayMembers = append(todayMembers, b)
 		}
 	}
 
@@ -88,8 +88,9 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	for _, b := range allBills {
 		if b.CreatedTime.Month() == time.Now().Month() &&
 			b.CreatedTime.Year() == time.Now().Year() {
-			_ = append(monthBills, b)
+			monthBills = append(monthBills, b)
 			monthMoney += b.Amount
+			fmt.Println("adfadsfadfadaf")
 		}
 	}
 
@@ -98,7 +99,7 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	for _, b := range allMembers {
 		if b.CreatedAt.Month() == time.Now().Month() &&
 			b.CreatedAt.Year() == time.Now().Year() {
-			_ = append(monthMembers, b)
+			monthMembers = append(monthMembers, b)
 		}
 	}
 
@@ -119,7 +120,7 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	for _, b := range allBills {
 		if lastMonth == int(b.CreatedAt.Month()) &&
 			lastYear == int(b.CreatedAt.Year()) {
-			_ = append(lastMonthBills, b)
+			lastMonthBills = append(lastMonthBills, b)
 			lastMonthMoney += b.Amount
 		}
 	}
@@ -128,7 +129,7 @@ func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
 	for _, b := range allMembers {
 		if lastMonth == int(b.CreatedAt.Month()) &&
 			lastYear == int(b.CreatedAt.Year()) {
-			_ = append(lastMembers, b)
+			lastMembers = append(lastMembers, b)
 		}
 	}
 
