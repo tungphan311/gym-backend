@@ -233,12 +233,12 @@ func StartRouter(db *gorm.DB) {
 	})
 
 	// Stats
-	api.GET("/stats", func(c echo.Context) error {
-		return service.GetStatsRecentMonth(c, db)
-	})
-
 	api.GET("/stats/topclasses", func(c echo.Context) error {
 		return service.GetTopMoneyClasses(c, db)
+	})
+
+	api.GET("/stats/dashboard", func(c echo.Context) error {
+		return service.GetStatsForDashboard(c, db)
 	})
 
 	e.Logger.Fatal(e.Start(":" + PORT))

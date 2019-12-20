@@ -4,6 +4,7 @@ import (
 	dbGorm "gym-backend/db"
 	"net/http"
 	"sort"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
@@ -31,6 +32,112 @@ func GetStatsRecentMonth(c echo.Context, db *gorm.DB) error {
 
 	// return c.JSON(http.StatusOK, map[string]string{})
 	return c.JSON(http.StatusOK, mapClassMoney)
+}
+
+type StatsDashboardResponse struct {
+	TodayBillCount                int
+	MonthBillsCount               int
+	TodayMoney                    float32
+	MonthMoney                    float32
+	IncreasePercentMonthBillCount float32
+	IncreasePercentMonthMoney     float32
+	IncreaseMonthBillCount        float32
+	IncreaseMonthMoney            float32
+	TotalMoney                    float32
+}
+
+func GetStatsForDashboard(c echo.Context, db *gorm.DB) error {
+	var (
+		allMembers []dbGorm.Member
+		allBills   []dbGorm.Bill
+		allDevices []dbGorm.Device
+		result     StatsDashboardResponse
+	)
+	db.Where(&dbGorm.Device{Active: true}).Find(&allDevices)
+	db.Where(&dbGorm.Bill{Active: true}).Find(&allBills)
+	db.Where(&dbGorm.Member{Active: true}).Find(&allMembers)
+
+	// Get today bills
+	var (
+		todayBills []dbGorm.Bill
+		todayMoney float64 = 0
+	)
+	for _, b := range allBills {
+		if b.CreatedTime == time.Now() {
+			_ = append(todayBills, b)
+			todayMoney += b.Amount
+		}
+	}
+
+	// Get this month bills
+	var (
+		monthBills []dbGorm.Bill
+		monthMoney float64 = 0
+	)
+	for _, b := range allBills {
+		if b.CreatedTime.Month() == time.Now().Month() &&
+			b.CreatedTime.Year() == time.Now().Year() {
+			_ = append(monthBills, b)
+			monthMoney += b.Amount
+		}
+	}
+
+	// Get last month bills
+	var (
+		lastMonthBills []dbGorm.Bill
+		lastMonthMoney float64 = 0
+	)
+
+	lastMonth := 12
+	if int(time.Now().Month()) != 1 {
+		lastMonth = int(time.Now().Month()) - 1
+	}
+	lastYear := int(time.Now().Year())
+	if lastMonth == 12 {
+		lastYear -= 1
+	}
+	for _, b := range allBills {
+		if lastMonth == int(time.Now().Month()) &&
+			lastYear == int(time.Now().Year()) {
+			_ = append(lastMonthBills, b)
+			lastMonthMoney += b.Amount
+		}
+	}
+
+	// Total revenue
+	var (
+		totalMoney float64 = 0
+	)
+	for _, b := range allBills {
+		totalMoney += b.Amount
+	}
+
+	// Result
+	result.TodayBillCount = len(todayBills)
+	result.MonthBillsCount = len(monthBills)
+	result.MonthMoney = float32(monthMoney)
+	result.TodayMoney = float32(todayMoney)
+	result.TotalMoney = float32(totalMoney)
+	increasedMoney := float32(monthMoney - lastMonthMoney)
+	increasedBills := float32(len(monthBills) - len(lastMonthBills))
+
+	if increasedBills >= 0 {
+		result.IncreaseMonthBillCount = increasedBills
+	}
+
+	if increasedMoney >= 0 {
+		result.IncreaseMonthMoney = increasedMoney
+	}
+
+	if len(lastMonthBills) != 0 {
+		result.IncreasePercentMonthBillCount = (float32(len(monthBills) - len(lastMonthBills))) / float32(len(lastMonthBills))
+	}
+
+	if lastMonthMoney != 0 {
+		result.IncreasePercentMonthMoney = float32(((monthMoney - lastMonthMoney) / lastMonthMoney))
+	}
+
+	return c.JSON(http.StatusOK, result)
 }
 
 // Get Top Money Classes
