@@ -26,6 +26,18 @@ type BuyClassRequest struct {
 	StaffID  uint `json:"staffid"`
 }
 
+type BillResponse struct {
+	ID          uint
+	MemberID    uint
+	StaffID     uint
+	ClassID     uint
+	Amount      float64
+	CreatedTime string
+	MemberName  string
+	StaffName   string
+	ClassName   string
+}
+
 func CreateBill(c echo.Context, db *gorm.DB) error {
 	r := new(BillRequest)
 
@@ -73,7 +85,32 @@ func GetAllBill(c echo.Context, db *gorm.DB) error {
 		MemberID: uint(memberid),
 		StaffID:  uint(staffid),
 	}).Find(&a)
-	return c.JSON(http.StatusOK, a)
+
+	var br BillResponse
+	var brs []BillResponse
+	for _, v := range a {
+		br.ID = v.ID
+		br.MemberID = v.MemberID
+		br.StaffID = v.StaffID
+		br.ClassID = v.ClassID
+		br.Amount = v.Amount
+		br.CreatedTime = v.CreatedTime.String()
+
+		member := &dbGorm.Member{}
+		class := &dbGorm.Class{}
+		staff := &dbGorm.Staff{}
+		db.Where("id = ?", v.MemberID).First(&member)
+		db.Where("id = ?", v.StaffID).First(&staff)
+		db.Where("id = ?", v.ClassID).First(&class)
+
+		br.MemberName = member.FullName
+		br.StaffName = staff.FullName
+		br.ClassName = class.Name
+
+		brs = append(brs, br)
+	}
+
+	return c.JSON(http.StatusOK, brs)
 }
 
 func UpdateBill(c echo.Context, db *gorm.DB) error {
