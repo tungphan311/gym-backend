@@ -16,9 +16,10 @@ type DeviceRequest struct {
 	Name      string `json:"name"`
 	InputDate string `json:"inputdate"`
 
-	DeviceStatusID uint `json:"devicestatusid"`
-	DeviceTypeID   uint `json:"devicetypeid"`
-	Active         bool `json:"active"`
+	DeviceStatusID uint   `json:"devicestatusid"`
+	DeviceTypeID   uint   `json:"devicetypeid"`
+	Description    string `json:"description"`
+	Active         bool   `json:"active"`
 }
 
 func CreateDevice(c echo.Context, db *gorm.DB) error {
@@ -36,6 +37,7 @@ func CreateDevice(c echo.Context, db *gorm.DB) error {
 		InputDate:      ipd,
 		DeviceStatusID: r.DeviceStatusID,
 		DeviceTypeID:   r.DeviceTypeID,
+		Description:    r.Description,
 		Active:         r.Active,
 	}
 	db.Create(&n)
@@ -58,7 +60,7 @@ func GetDeviceWithId(c echo.Context, db *gorm.DB) error {
 
 func GetAllDevice(c echo.Context, db *gorm.DB) error {
 	a := []dbGorm.Device{}
-	
+
 	devicetypeid, _ := strconv.ParseUint(c.QueryParam("devicetypeid"), 10, 64)
 	devicestatusid, _ := strconv.ParseUint(c.QueryParam("devicestatusid"), 10, 64)
 	db.Where(&dbGorm.Device{
@@ -86,6 +88,7 @@ func UpdateDevice(c echo.Context, db *gorm.DB) error {
 	q.InputDate = ipd
 	q.DeviceStatusID = r.DeviceStatusID
 	q.DeviceTypeID = r.DeviceTypeID
+	q.Description = r.Description
 	db.Save(&q)
 
 	return c.JSON(http.StatusOK, "OK")

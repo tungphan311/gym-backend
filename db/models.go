@@ -102,6 +102,7 @@ type Device struct {
 
 	DeviceStatusID uint
 	DeviceTypeID   uint
+	Description    string
 	Active         bool `gorm:"DEFAULT:true"`
 }
 
