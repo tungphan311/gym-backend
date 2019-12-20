@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	dbGorm "gym-backend/db"
 	"net/http"
 	"sort"
@@ -153,7 +154,6 @@ func GetTopMoneyClasses(c echo.Context, db *gorm.DB) error {
 		topClasses []TopClassTotalMoney
 		results    [5]TopClassTotalMoney
 		topClass   TopClassTotalMoney
-		class      dbGorm.Class
 	)
 
 	db.Where(&dbGorm.Bill{Active: true}).Find(&allBills)
@@ -167,7 +167,12 @@ func GetTopMoneyClasses(c echo.Context, db *gorm.DB) error {
 	}
 
 	for k, v := range mapClassMoney {
+		class := dbGorm.Class{}
 		db.Where("id = ?", k).First(&class)
+
+		fmt.Println("id = ", k)
+		fmt.Println(class)
+		fmt.Println("----")
 
 		if class.ID != 0 {
 			topClass.Class = class
