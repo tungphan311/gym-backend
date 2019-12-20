@@ -94,7 +94,7 @@ func StartRouter(db *gorm.DB) {
 		return service.GetClassWithId(c, db)
 	})
 
-	api.GET("/classes/classtype/:id", func(c echo.Context) error {
+	api.GET("/classes/classtype/:id/:haspt", func(c echo.Context) error {
 		return service.GetClassWithClassTypeId(c, db)
 	})
 

@@ -55,8 +55,11 @@ func GetClassWithId(c echo.Context, db *gorm.DB) error {
 
 func GetClassWithClassTypeId(c echo.Context, db *gorm.DB) error {
 	id := c.Param("id")
+	haspt := c.Param("haspt")
+
 	q := []dbGorm.Class{}
-	db.Where("class_type_id = ?", id).Find(&q)
+
+	db.Where("class_type_id = ? AND haspt = ?", id, haspt).Find(&q)
 
 	if len(q) == 0 {
 		return c.JSON(http.StatusBadRequest, &ErrorResponse{
