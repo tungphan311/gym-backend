@@ -125,3 +125,11 @@ func DeactiveMember(c echo.Context, db *gorm.DB) error {
 
 	return c.JSON(http.StatusOK, "Ok")
 }
+
+func GetRecentMember(c echo.Context, db *gorm.DB) error {
+	var members []dbGorm.Member
+
+	db.Limit(5).Order("id desc").Find(&dbGorm.Member{}).Find(&members)
+
+	return c.JSON(http.StatusOK, members)
+}
